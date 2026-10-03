@@ -4,9 +4,9 @@
 // ======================================================================
 #include "ComCcsdsSubtopologyConfig.hpp"
 
-#include <Fw/Types/Assert.hpp>
 #include <zephyr/devicetree.h>
 #include <zephyr/linker/section_tags.h>
+#include <Fw/Types/Assert.hpp>
 
 namespace {
 

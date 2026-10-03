@@ -73,17 +73,17 @@ class FrameBufferAdapter final : public FrameBufferAdapterComponentBase {
     //! Count and report a rejected palette
     void rejectPalette(FrameBufferStatus reason, FwSizeType size);
 
-    U8 m_frameStorage[MAX_PACKED_FRAME_SIZE];    //!< Packed frame storage lent on packedOut
-    U8 m_paletteStorage[PACKED_PALETTE_SIZE];    //!< Packed palette storage lent on packedOut
-    bool m_frameLent;                            //!< m_frameStorage is out on packedOut
-    bool m_paletteLent;                          //!< m_paletteStorage is out on packedOut
-    U32 m_packedRejected;                        //!< Buffers of unreadable kind
-    U32 m_framesPacked;                          //!< Frames packed
-    U32 m_framesUnpacked;                        //!< Frames unpacked
-    U32 m_framesRejected;                        //!< Frames rejected
-    U32 m_palettesPacked;                        //!< Palettes packed
-    U32 m_palettesUnpacked;                      //!< Palettes unpacked
-    U32 m_palettesRejected;                      //!< Palettes rejected
+    U8 m_frameStorage[MAX_PACKED_FRAME_SIZE];  //!< Packed frame storage lent on packedOut
+    U8 m_paletteStorage[PACKED_PALETTE_SIZE];  //!< Packed palette storage lent on packedOut
+    bool m_frameLent;                          //!< m_frameStorage is out on packedOut
+    bool m_paletteLent;                        //!< m_paletteStorage is out on packedOut
+    U32 m_packedRejected;                      //!< Buffers of unreadable kind
+    U32 m_framesPacked;                        //!< Frames packed
+    U32 m_framesUnpacked;                      //!< Frames unpacked
+    U32 m_framesRejected;                      //!< Frames rejected
+    U32 m_palettesPacked;                      //!< Palettes packed
+    U32 m_palettesUnpacked;                    //!< Palettes unpacked
+    U32 m_palettesRejected;                    //!< Palettes rejected
 };
 
 }  // namespace Components
