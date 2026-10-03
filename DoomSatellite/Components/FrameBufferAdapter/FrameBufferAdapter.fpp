@@ -26,10 +26,10 @@ module Components {
         # ----------------------------------------------------------------------
 
         @ Frame to pack
-        sync input port frameIn: Doom.RawFrame
+        guarded input port frameIn: Doom.RawFrame
 
         @ Palette to pack
-        sync input port paletteIn: Doom.PaletteSend
+        guarded input port paletteIn: Doom.PaletteSend
 
         @ Packed frames and palettes; each buffer is component storage and must be returned on packedOutReturn
         output port packedOut: Fw.BufferSend
@@ -42,7 +42,7 @@ module Components {
         # ----------------------------------------------------------------------
 
         @ Packed frame or palette to unpack
-        sync input port packedIn: Fw.BufferSend
+        guarded input port packedIn: Fw.BufferSend
 
         @ Return of every buffer received on packedIn
         output port packedInReturn: Fw.BufferSend

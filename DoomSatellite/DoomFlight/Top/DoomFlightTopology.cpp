@@ -44,7 +44,7 @@ enum TopologyConstants {
     HUB_BUFFER_MANAGER_ID = 300,
     HUB_SMALL_BUFFER_SIZE = 1024,  // Commands, events, telemetry and packed palettes
     HUB_SMALL_BUFFER_COUNT = 8,
-    HUB_LARGE_BUFFER_SIZE = 4096,  // UDP receive buffers and packed frames (4,008 bytes, 4,024 with the hub header)
+    HUB_LARGE_BUFFER_SIZE = 4096,  // UDP receive buffers and packed frames (4,009 bytes, 4,025 with the hub header)
     HUB_LARGE_BUFFER_COUNT = 12,
     HUB_RECV_PRIORITY = 5,
     HUB_RECONNECT_PRIORITY = 6,
@@ -86,7 +86,9 @@ void configureTopology(const TopologyState& state) {
     rateGroup10Hz.configure(rateGroup10HzContext, FW_NUM_ARRAY_ELEMENTS(rateGroup10HzContext));
     rateGroup1Hz.configure(rateGroup1HzContext, FW_NUM_ARRAY_ELEMENTS(rateGroup1HzContext));
     // Reboot into the bootloader when the host opens the console at the board's touch baud rate
-    (void)touchReset.configure(state.uartDevice);
+    if (touchReset.configure(state.uartDevice) != Fw::Success::SUCCESS) {
+        printk("Touch reset unavailable\n");
+    }
 
     Svc::BufferManager::BufferBins hubBins;
     memset(&hubBins, 0, sizeof(hubBins));

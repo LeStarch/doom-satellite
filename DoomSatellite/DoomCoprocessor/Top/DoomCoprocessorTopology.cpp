@@ -22,7 +22,7 @@ enum TopologyConstants {
     HUB_BUFFER_MANAGER_ID = 300,
     HUB_SMALL_BUFFER_SIZE = 1024,  // Commands, events, telemetry and packed palettes
     HUB_SMALL_BUFFER_COUNT = 16,
-    HUB_LARGE_BUFFER_SIZE = 4096,  // UDP receive buffers and packed frames (4,008 bytes, 4,024 with the hub header)
+    HUB_LARGE_BUFFER_SIZE = 4096,  // UDP receive buffers and packed frames (4,009 bytes, 4,025 with the hub header)
     HUB_LARGE_BUFFER_COUNT = 32,
     HUB_RECV_PRIORITY = 30,
     HUB_RECONNECT_PRIORITY = 29,

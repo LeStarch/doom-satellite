@@ -35,11 +35,11 @@ In DoomSatellite:
 
 | Kind | Name | Type | Description |
 | --- | --- | --- | --- |
-| `sync input` | `frameIn` | `Doom.RawFrame` | Frame to pack |
-| `sync input` | `paletteIn` | `Doom.PaletteSend` | Palette to pack |
+| `guarded input` | `frameIn` | `Doom.RawFrame` | Frame to pack |
+| `guarded input` | `paletteIn` | `Doom.PaletteSend` | Palette to pack |
 | `output` | `packedOut` | `Fw.BufferSend` | Packed frame or palette in component storage; must be returned on `packedOutReturn` |
 | `sync input` | `packedOutReturn` | `Fw.BufferSend` | Return of buffers sent on `packedOut` |
-| `sync input` | `packedIn` | `Fw.BufferSend` | Packed frame or palette to unpack |
+| `guarded input` | `packedIn` | `Fw.BufferSend` | Packed frame or palette to unpack |
 | `output` | `packedInReturn` | `Fw.BufferSend` | Return of every buffer received on `packedIn` |
 | `output` | `frameOut` | `Doom.RawFrame` | Unpacked frame; the pixels reference the received buffer and are valid only during the call |
 | `output` | `paletteOut` | `Doom.PaletteSend` | Unpacked palette |
@@ -68,7 +68,16 @@ All fields are big-endian (F Prime serialization).
   component that called `bufferIn[i]`, so the relay sits between the allocator-owning sender (`Svc::BufferRepeater`)
   and the hub, and routes the hub's return to the allocator on `echoReturn`.
 
-### 3.4 Events
+### 3.4 Concurrency
+
+`frameIn`, `paletteIn` and `packedIn` are guarded: on DoomCoprocessor, frames are packed on the DOOM rate group thread
+while echoed buffers are unpacked on the hub's UDP receive thread, and both update the rejection counters.
+`packedOutReturn`, `echoOutReturn` and the echo ports are sync because GenericHub returns buffers within the
+`packedOut` / `echoOut` call, from the calling thread; a guarded return port would deadlock on the held mutex.
+
+When `packedOut` is not connected, `frameIn` and `paletteIn` drop their input without counting it.
+
+### 3.5 Events
 
 | Name | Severity | Arguments | Description |
 | --- | --- | --- | --- |
@@ -78,7 +87,7 @@ All fields are big-endian (F Prime serialization).
 
 Throttles are cleared by the next successful frame or palette.
 
-### 3.5 Telemetry
+### 3.6 Telemetry
 
 | Name | Type | Description |
 | --- | --- | --- |
