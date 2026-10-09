@@ -36,6 +36,21 @@ module DoomFlight {
     stack size Default.STACK_SIZE \
     priority 4
 
+  @ One doomgeneric tick per cycle; the cadence (DOOM_RATE_HZ, DoomFlightTopology.cpp) is set by the
+  @ measured tick time on this board, not DOOM's native 35 Hz.
+  @ Lowest priority: a long tick then runs in the time left over by command, event, telemetry and
+  @ hub processing rather than starving them.
+  instance rateGroupDoom: Svc.ActiveRateGroup base id 0x10003000 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 14
+
+  @ Receives files from the ground (the DOOM WAD) into the LittleFS mount at /lfs
+  instance fileUplink: Svc.FileUplink base id 0x10004000 \
+    queue size Default.QUEUE_SIZE \
+    stack size Default.STACK_SIZE \
+    priority 6
+
 
   # ----------------------------------------------------------------------
   # Queued component instances
@@ -67,15 +82,5 @@ module DoomFlight {
   instance hubBufferManager: Svc.BufferManager base id 0x1001A000
 
   instance cmdSplitter: Svc.CmdSplitter base id 0x1001B000
-
-  @ Repeats each packed frame and palette from the hub: one copy is echoed to DoomCoprocessor, one goes to frameAdapter
-  instance frameRepeater: Svc.BufferRepeater base id 0x1001C000
-
-  @ Unpacks frames and palettes received from DoomCoprocessor for frameTlmProcessor
-  instance frameAdapter: Components.FrameBufferAdapter base id 0x1001D000
-
-  @ Converts frames and palettes from DoomCoprocessor into row and palette telemetry. Keeps the DoomSubtopology base
-  @ id, so channel ids match a DoomSubtopology deployment.
-  instance frameTlmProcessor: Doom.FrameTlmProcessor base id DoomSubtopologyConfig.BASE_ID + 0x03000
 
 }

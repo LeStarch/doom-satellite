@@ -54,10 +54,10 @@ module Doom {
 
 module DoomSubtopologyConfig {
 
-  @ Base ID for the Doom subtopology. Deployments should offset other
-  @ subtopologies away from this range. The "0D" prefix is chosen so
-  @ the slot reads as "DOOM" in hex.
-  constant BASE_ID = 0x2D000000
+  @ Base ID for the Doom subtopology, which runs on DoomFlight. It must
+  @ stay below DoomFlight's REMOTE_BASE_OPCODE (0x20000000): opcodes at
+  @ or above it are forwarded through the hub to DoomCoprocessor.
+  constant BASE_ID = 0x1D000000
 
   @ BufferManager pool sizing for the Doom subtopology.
   module BuffMgr {
