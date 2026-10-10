@@ -8,15 +8,16 @@
 module Doom {
 
   # ----------------------------------------------------------------------
-  # Fixed engine geometry. Must match the DOOMGENERIC_RESX/RESY compile
-  # definitions on the upstream engine; do not change independently.
+  # Engine geometry: DOOM's native 320x200 (DOOM_FRAME_SCALE=1, the
+  # fprime-stress CMake default). On the Teensy the frame lives in QSPI
+  # PSRAM and the 640x400 upscale cost more per tick than the renderer.
   # ----------------------------------------------------------------------
 
   @ Width of the full-resolution DOOM frame in pixels.
-  constant FRAME_WIDTH = 640
+  constant FRAME_WIDTH = 320
 
   @ Height of the full-resolution DOOM frame in scanlines.
-  constant FRAME_HEIGHT = 400
+  constant FRAME_HEIGHT = 200
 
   @ Number of palette bytes (256 entries * 3 bytes per RGB triple).
   constant PALETTE_BYTES = 768
@@ -29,8 +30,9 @@ module Doom {
   # ----------------------------------------------------------------------
 
   @ Downsample factor applied to each frame dimension. Must divide
-  @ FRAME_WIDTH and FRAME_HEIGHT evenly: 1, 2, 4, 8, or 16.
-  constant DOWNSAMPLE_FACTOR = 8
+  @ FRAME_WIDTH and FRAME_HEIGHT evenly. 4 keeps the 80 x 50 rows the
+  @ 115200-baud USB UART downlink was sized for.
+  constant DOWNSAMPLE_FACTOR = 4
 
   @ Width in pixels of the downsampled frame (and of each FrameRow).
   constant DOWNSAMPLED_WIDTH = FRAME_WIDTH / DOWNSAMPLE_FACTOR

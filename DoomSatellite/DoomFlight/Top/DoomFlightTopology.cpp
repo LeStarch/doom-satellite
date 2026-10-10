@@ -28,11 +28,13 @@ constexpr FwSizeType getRateGroupPeriod(const FwSizeType hz) {
     return 1000 / (hz * BASE_RATEGROUP_PERIOD_MS);
 }
 
-// DOOM's native cadence is 35 Hz, but on the Teensy one 640x400 tick (render, melt copy, downsample, 50 row
-// channels) measures ~120 ms with the engine memory in QSPI PSRAM, so a 35 Hz group would slip every cycle and its
-// queue would drop the health pings (FATAL -> reboot). 5 Hz leaves ~40% margin; the engine paces virtual time from
-// the period token below, so gameplay stays deterministic.
-constexpr FwSizeType DOOM_RATE_HZ = 5;
+// DOOM's native cadence is 35 Hz; the Teensy runs 30 Hz. The engine memory lives in QSPI PSRAM (90 MHz), where
+// a native 320x200 tick (logic, render, downsample, 50 row channels) measures 20-31 ms: 84% of the CPU at 35 Hz,
+// which starves the telemetry and downlink threads (or, with the engine at the lowest priority, falls behind
+// until the health ping is late). At 30 Hz the engine takes ~70% and the board holds the rate with a working
+// downlink. The engine paces game time per tick, so play runs at 30/35 of real time. The 640x400 upscale and a
+// frame copy used to cost ~50 ms more and forced 5 Hz. See the rateGroupDoom comment in instances.fpp.
+constexpr FwSizeType DOOM_RATE_HZ = 30;
 
 // The 1 kHz base timer is divided into the 10Hz, 1Hz and DOOM rate groups with 0 offset
 Svc::RateGroupDriver::DividerSet rateGroupDivisorsSet{{

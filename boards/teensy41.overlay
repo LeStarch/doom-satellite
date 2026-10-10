@@ -119,7 +119,11 @@
 		/* APS6404L is 8MB, 64MBit pSRAM */
 		size = <DT_SIZE_M(8 * 8)>;
 		reg = <0>;
-		spi-max-frequency = <DT_FREQ_M(88)>;
+		/* FlexSPI2 root clock is PLL3 PFD0 / 8 = 90 MHz and the memc driver only divides it by an integer,
+		 * rounding down: 88 MHz would select /2 = 45 MHz on the bus. 90 MHz runs the APS6404L (133 MHz part)
+		 * at the full root clock with SERCLKDIV = /1.
+		 */
+		spi-max-frequency = <DT_FREQ_M(90)>;
 		status = "okay";
 		cs-interval-unit = <1>;
 		cs-interval = <2>;

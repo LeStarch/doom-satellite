@@ -36,12 +36,19 @@ module DoomFlight {
     stack size Default.STACK_SIZE \
     priority 4
 
-  @ One doomgeneric tick per cycle; the cadence (DOOM_RATE_HZ, DoomFlightTopology.cpp) is set by the
-  @ measured tick time on this board, not DOOM's native 35 Hz.
-  @ Lowest priority: a long tick then runs in the time left over by command, event, telemetry and
-  @ hub processing rather than starving them.
+  @ One doomgeneric tick per cycle at DOOM_RATE_HZ (DoomFlightTopology.cpp). Measured on the Teensy 4.1
+  @ with the engine in 90 MHz QSPI PSRAM, native 320x200: the DOOM thread needs 84% of the CPU at 35 Hz
+  @ and 68-70% at 30 Hz, and the downlink, telemetry and event threads need ~15%, so 35 Hz only fits by
+  @ starving them; 30 Hz leaves ~18% idle.
+  @ Priority: lowest. A long tick then runs in the time left over by command, event, telemetry and
+  @ downlink service instead of stalling them. The 1 Hz telemetry burst still costs this group ~100 ms
+  @ a second (the Zephyr UART driver busy-waits in uart_poll_out while USB CDC-ACM drains).
+  @ Queue: 60 cycles (2 s at 30 Hz). The health ping is queued behind the pending cycles, and a full
+  @ queue drops it (PingIn is a drop port), so the queue must hold the longest tick plus the burst: a level
+  @ load measures up to 1.7 s (RgMaxTime), i.e. ~50 cycles. The engine paces game time per tick, so queued
+  @ cycles replay deterministically; only the queue size bounds the wall-clock lag.
   instance rateGroupDoom: Svc.ActiveRateGroup base id 0x10003000 \
-    queue size Default.QUEUE_SIZE \
+    queue size 60 \
     stack size Default.STACK_SIZE \
     priority 14
 
