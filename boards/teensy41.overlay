@@ -123,7 +123,7 @@
 		 * rounding down: 88 MHz would select /2 = 45 MHz on the bus. 90 MHz runs the APS6404L (133 MHz part)
 		 * at the full root clock with SERCLKDIV = /1.
 		 */
-		spi-max-frequency = <DT_FREQ_M(90)>;
+		spi-max-frequency = <DT_FREQ_M(120)>;
 		status = "okay";
 		cs-interval-unit = <1>;
 		cs-interval = <2>;

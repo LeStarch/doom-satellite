@@ -19,6 +19,7 @@ if (FPRIME_PLATFORM STREQUAL "Zephyr")
             "${CMAKE_CURRENT_LIST_DIR}/Main.cpp"
             "${CMAKE_CURRENT_LIST_DIR}/CppAtomics.c"
             "${CMAKE_CURRENT_LIST_DIR}/PsramHeap.c"
+            "${CMAKE_CURRENT_LIST_DIR}/PsramClock.c"
         DEPENDS
             ${FPRIME_CURRENT_MODULE}_Top
     )
